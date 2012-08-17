@@ -1,4 +1,5 @@
 bhlmeta
 ========
 
-A small program to retrieve the metadata for a BHL page.
+A small program to retrieve the metadata for a BHL page,
+written in Play! 2.0 for Heroku.
