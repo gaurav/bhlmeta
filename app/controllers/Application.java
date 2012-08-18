@@ -24,6 +24,8 @@ public class Application extends Controller {
         String errorMessage = "";
         String commonsString = "";
 
+        page = page.trim();
+
         String page_id;
         if(page.matches("^\\d+$")) {
             page_id = page;
@@ -44,15 +46,39 @@ public class Application extends Controller {
         
         // Create the commonsString.
         if(titleMetadata.size() > 1) {
-            commonsString = "{{Information Art of Life | url = http://www.biodiversitylibrary.org/page/" + page_id + "\n" +
-                "| Type = " + pageMetadata.get("//PageTypes/[0]PageType/[0]PageTypeName").toLowerCase() + "\n" +
+            LinkedList<String> agent_names = new LinkedList<String>();
+
+            Pattern p_author_name = Pattern.compile("^//Authors/\\[\\d+\\]Creator/\\[\\d+\\]Name");
+
+            for(String name: titleMetadata.keySet()) {
+                Matcher m = p_author_name.matcher(name);
+                if(m.matches()) {
+                    agent_names.add(titleMetadata.get(name));
+                }
+            }
+
+            Pattern p_swapped_names = Pattern.compile("^(\\w+),\\s+([\\w\\.\\s]+)\\s*(?:,)?\\s*$");
+            StringBuilder sb_agent_names = new StringBuilder();
+            for(String agent: agent_names) {
+                // Swap order of names for agent.
+                Matcher m = p_swapped_names.matcher(agent);
+                if(m.matches()) {
+                    agent = m.group(2) + " " + m.group(1);
+                }
+
+                // Creator
+                sb_agent_names.append("\n{{agent|creator|" + agent + "}}");
+            }
+
+            commonsString = "{{Information Art of Life | url=http://www.biodiversitylibrary.org/page/" + page_id + "\n" +
+                "| Type = Illustration\n" + 
                 "| Title = \n" + 
                 "| Description = \n" +
-                "| Agents = \n" + 
+                "| Agents = " + sb_agent_names.toString() + "\n" + 
                 "| Dates = \n" +
                 "| Source = " + 
                     titleMetadata.get("//FullTitle") + "\n" +
-                    titleMetadata.get("//PublisherPlace") + " " + titleMetadata.get("//PublisherName") + "\n" +
+                    titleMetadata.get("//PublisherPlace") + " " + titleMetadata.get("//PublisherName") + " " + titleMetadata.get("//PublicationDate") + "\n" +
                     "{{Biodiversity Heritage Library | url=http://www.biodiversitylibrary.org/page/" + page_id + "}}\n" + 
                 "| Subjects = \n" +
                 "| Copyright = \n" +
@@ -60,7 +86,7 @@ public class Application extends Controller {
                 "}}";
         }
 
-        return ok(result.render(page, errorMessage, pageMetadata, itemMetadata, titleMetadata, commonsString));
+        return ok(result.render(page, errorMessage, pageMetadata, itemMetadata, titleMetadata, commonsString, page_id));
     }
 
     private static Map<String, String> getBHLPageMetadata(String page_id) {

@@ -1,7 +1,7 @@
 @(query:String="")
 
 @helper.form(action = routes.Application.query("")) {
-    <p><label for="q">Please enter the BHL page number you would like to retrieve metadata on.</label></p>
+    <p><label for="q">Please enter the BHL page number or URL you would like to retrieve metadata on.</label></p>
     <p><input name="q" type="text" size="30" value="@query" /> 
         <input type="submit" value="Go!" />
     </p>
