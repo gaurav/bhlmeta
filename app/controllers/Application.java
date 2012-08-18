@@ -9,6 +9,7 @@ import views.html.*;
 
 import java.net.*;
 import java.util.*;
+import java.util.regex.*;
 import org.w3c.dom.*;
 
 public class Application extends Controller {
@@ -23,8 +24,21 @@ public class Application extends Controller {
         String errorMessage = "";
         String commonsString = "";
 
-        // For now, assume that we have a page id. 
-        HashMap<String, String> pageMetadata = new HashMap<String, String>(getBHLPageMetadata(page));
+        String page_id;
+        if(page.matches("^\\d+$")) {
+            page_id = page;
+        } else {
+            Pattern p_bhl_page_url = Pattern.compile("^(?:http://)?(?:www\\.)?biodiversitylibrary.org/page/(\\d+)$");
+            Matcher m = p_bhl_page_url.matcher(page);
+            if(m.matches()) {
+                page_id = m.group(1);
+            } else {
+                errorMessage = "Could not determine how to parse query: '" + page + "'";
+                page_id = errorMessage;
+            }
+        }
+
+        HashMap<String, String> pageMetadata = new HashMap<String, String>(getBHLPageMetadata(page_id));
         HashMap<String, String> itemMetadata = new HashMap<String, String>(getBHLItemMetadata(pageMetadata.get("//ItemID")));
         HashMap<String, String> titleMetadata = new HashMap<String, String>(getBHLTitleMetadata(itemMetadata.get("//PrimaryTitleID")));
         
