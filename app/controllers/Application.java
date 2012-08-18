@@ -106,7 +106,7 @@ public class Application extends Controller {
 
         dom.normalize();
         for(Node n: XPath.selectNodes("/Response/Result/*", dom)) {
-            addTextNodes(results, n, "/");
+            addTextNodes(results, n, "//");
         }
 
         return results;
@@ -116,13 +116,12 @@ public class Application extends Controller {
         for(int x = 0; x < root.getChildNodes().getLength(); x++) {
             Node n = root.getChildNodes().item(x);
 
-            String name = parentNode + "/" + root.getNodeName();
-            if(x > 0) name += String.format("[%d]", x);
+            String name = parentNode + root.getNodeName();
 
             if(n.getNodeType() == Node.TEXT_NODE) {
                 results.put(name, n.getNodeValue());
             } else {
-                addTextNodes(results, n, name);
+                addTextNodes(results, n, name + "/" + String.format("[%d]", x));
             }
         }
     }
