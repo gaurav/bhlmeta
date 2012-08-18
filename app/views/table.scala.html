@@ -1,0 +1,24 @@
+@(kv:Map[String,String], keyName:String="Property", keyValue:String="Value")
+@import java.util._
+
+<table border="1">
+    <tr>
+        <th>@keyName</th>
+        <th>@keyValue</th>
+    </tr>
+
+    @if(kv.isEmpty()) {
+        <tr>
+            <td colspan="2"><em>No properties found.</em></td>
+        </tr>
+    } else {
+        
+        @for(key <- new TreeSet(kv.keySet())) {
+            <tr>
+                <td>@key</td>
+                <td>@Html(Application.formatValue(kv.get(key)))</td>
+            </tr>
+        }
+    }
+
+</table>

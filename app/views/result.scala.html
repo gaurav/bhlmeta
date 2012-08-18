@@ -1,0 +1,21 @@
+@(query:String)(errorMessage:String)(pageMetadata:Map[String,String]=null)(itemMetadata:Map[String,String]=null)(titleMetadata:Map[String,String]=null)(commonsString:String=null)
+
+@layout(title="Welcome!") {
+    @form(query)
+
+    @if(errorMessage) {
+        <p><strong>Error</strong>: @errorMessage</p>
+    } else {
+        <h2>Page metadata</h2>
+        @table(pageMetadata)
+
+        <h2>Item metadata</h2>
+        @table(itemMetadata)
+
+        <h2>Title metadata</h2>
+        @table(titleMetadata)
+
+        <h2>Commons template</h2>
+        <textarea rows=25 cols=80>@commonsString</textarea>
+    }
+}
