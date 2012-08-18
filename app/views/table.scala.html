@@ -13,7 +13,7 @@
         </tr>
     } else {
         
-        @for(key <- new TreeSet(kv.keySet())) {
+        @for(key <- (new TreeSet(kv.keySet())).iterator()) {
             <tr>
                 <td>@key</td>
                 <td>@Html(Application.formatValue(kv.get(key)))</td>

@@ -42,6 +42,23 @@ public class Application extends Controller {
         HashMap<String, String> itemMetadata = new HashMap<String, String>(getBHLItemMetadata(pageMetadata.get("//ItemID")));
         HashMap<String, String> titleMetadata = new HashMap<String, String>(getBHLTitleMetadata(itemMetadata.get("//PrimaryTitleID")));
         
+        // Create the commonsString.
+        if(titleMetadata.size() > 1) {
+            commonsString = "{{Information Art of Life | url = http://www.biodiversitylibrary.org/page/" + page_id + "\n" +
+                "| Type = " + pageMetadata.get("//PageTypes/[0]PageType/[0]PageTypeName").toLowerCase() + "\n" +
+                "| Title = \n" + 
+                "| Description = \n" +
+                "| Agents = \n" + 
+                "| Dates = \n" +
+                "| Source = " + 
+                    titleMetadata.get("//FullTitle") + "\n" +
+                    titleMetadata.get("//PublisherPlace") + " " + titleMetadata.get("//PublisherName") + "\n" +
+                    "{{Biodiversity Heritage Library | url=http://www.biodiversitylibrary.org/page/" + page_id + "}}\n" + 
+                "| Subjects = \n" +
+                "| Copyright = \n" +
+                "| Inscriptions = \n" +
+                "}}";
+        }
 
         return ok(result.render(page, errorMessage, pageMetadata, itemMetadata, titleMetadata, commonsString));
     }
